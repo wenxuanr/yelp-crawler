@@ -1,0 +1,14 @@
+{
+  "name": "crawler_json",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "wenxuan ruan",
+  "license": "ISC",
+  "dependencies": {
+    "yelp-fusion": "^2.0.3"
+  }
+}
