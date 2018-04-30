@@ -32,9 +32,13 @@ categories.forEach(async function (cate) {
     offset = 0;
     let busienss;
     while (offset < count) {
-        busienss = await get_Yelp(location, cate, offset);
-        console.log("processed batch " + busienss);
-        offset = busienss;
+        try {
+            busienss = await get_Yelp(location, cate, offset);
+            console.log("processed batch " + busienss);
+            offset = busienss;
+        } catch (e) {
+            console.log(e);
+        }
     }
 });
 

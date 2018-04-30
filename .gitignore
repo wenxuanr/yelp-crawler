@@ -8,5 +8,6 @@
 output.*
 config.js
 node_modules
+*.csv
 out
 gen
