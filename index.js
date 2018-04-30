@@ -42,19 +42,24 @@ async function get_Yelp(location, category, offset) {
     if (offset > count) {
         return;
     }
-    let res = await client.search({
-            category: category,
+    try {
+        let res = await client.search({
+            categories: category,
             location: location,
             limit: 50,
             sort_by: 'best_match',
             term: 'restaurants',
             offset: offset
-    });
-    offset+=50;
-    console.log("processing category: " + category);
-    console.log("offset is " + offset);
-    pushToJson(res.jsonBody.businesses, category);
-    writeJson();
+        });
+        offset+=50;
+        console.log("processing category: " + category);
+        console.log("offset is " + offset);
+        pushToJson(res.jsonBody.businesses, category);
+        writeJson();
+    } catch (err) {
+        console.log(err);
+    }
+
     return offset;
 }
 
