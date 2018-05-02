@@ -9,6 +9,12 @@
   "author": "wenxuan ruan",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.0",
+    "aws-es": "^1.5.3",
+    "aws-sdk": "^2.230.1",
+    "csv-parse": "^2.2.0",
+    "elasticsearch": "^14.2.2",
+    "moment": "^2.22.1",
     "yelp-fusion": "^2.0.3"
   }
 }

@@ -9,5 +9,6 @@ output.*
 config.js
 node_modules
 *.csv
+*.json
 out
 gen
