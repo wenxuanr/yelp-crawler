@@ -1,45 +1,70 @@
-const AWS = require('aws-sdk');
-const config = require('./config');
-const fs = require('fs');
-const moment = require("moment");
-const ddb = new AWS.DynamoDB({
-    region: config.AWS_REGION
-});
+const fs = require("fs");
+const AWS = require("aws-sdk");
+const DOC = require("dynamodb-doc");
+const config = require("./config");
+const attr = require('dynamodb-data-types').AttributeValue;
+const moment= require('moment');
+AWS.config.update({region: config.AWS_REGION});
+const dynamodb = new AWS.DynamoDB();
 
-let curr = 0;
+
+
+
 fs.readFile("output.json", "utf8", (err, data) => {
     data = JSON.parse(data);
-    let length = data.length;
-    let requestItems = [];
-    for (let i = curr; i < length && i < curr + 25; i++) {
-        let req = {
-            PutRequest: {
-                Item: amazonDynamo(data[i])
+    data.forEach(el => {
+        let noneEmptyData = transformToAmazonItem(el);
+        let param = {
+            RequestItems: {
+                "yelp-restaurants": [{
+                    PutRequest: {
+                        Item: noneEmptyData
+                    }
+                }]
             }
         }
-        requestItems.push(req);
-    }
-    let params = {
-        RequestItems: {
-            [config.DYNAMO_TABLE_NAME]: requestItems
-        }
-    };
-    ppromise(params);
+        dynamodb.batchWriteItem(param, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else     console.log(data);           // successful response
+            /*
+            data = {
+            }
+            */
+        });
+    })
+
+
+
+
+
+    /**/
+    // data = JSON.parse(data);
+    // data.forEach(element => {
+    //    let noneEmptyData = transFormData(element);
+    //    let dataWrap = attr.wrap(noneEmptyData);
+    //    let param = {
+    //         RequestItems: {
+    //             "yelp-restaurants": [{
+    //                 PutRequest: {
+    //                     Item: noneEmptyData
+    //                 }
+    //             }]
+    //         }
+    //     }
+    //
+    //     dynamodb.batchWriteItem(param, function(err, data) {
+    //         if (err) console.log(err, err.stack); // an error occurred
+    //         else     console.log(data);           // successful response
+    //         /*
+    //         data = {
+    //         }
+    //         */
+    //     });
+    // });
+
 });
 
-function ppromise(params) {
-    let fn = ((resolve, reject) => {
-        dynamo.batchWriteItem(params, (err, result) => {
-            if (err) {
-                console.log(err);
-                console.log(params);
-            }
-            resolve(result);
-        });
-    });
-    return new Promise(fn);
-}
-function amazonDynamo(item) {
+function transformToAmazonItem(item) {
     let result = {};
     let checkList = ["id", "category", "review_count", "rating", "name", "image_url", "location", "coordinates", "phone"];
     checkList.forEach(attribute => {
